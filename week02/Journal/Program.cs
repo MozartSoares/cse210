@@ -21,7 +21,6 @@ class Program
             {
                 case 1:
                     Journal.Write();
-                    Console.WriteLine("Write selected");
                 break;
                 case 2:
                     Journal.Display();
