@@ -16,7 +16,7 @@ class Program
         
         int option = 0;
         Console.WriteLine("Welcome to the Scripture Memorizer program!");
-        while (option != 5)
+        while (option != 4)
         {   
             Console.WriteLine("Please select one of the following choices: ");
             Console.WriteLine("1. Play with a random scripture");
