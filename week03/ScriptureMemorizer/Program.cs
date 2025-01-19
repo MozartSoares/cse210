@@ -28,15 +28,12 @@ class Program
             switch (option)
             {
                 case 1:
-                    bool fetchedRandom = false;
-                    while (!fetchedRandom) {
-                        try {
-                            await library.FetchRandomScriptureAsync();
-                            fetchedRandom = true;
-                        } catch (Exception e) {
-                            Console.WriteLine(e.Message);
-                        };
-                    }
+                    try {
+                        await library.FetchRandomScriptureAsync();
+                    } catch (Exception e) {
+                        Console.WriteLine(e.Message);
+                        break;
+                    };
                     Scripture scripture = library.GetLastScripture();
                     PlayScriptureGame(scripture);
                     break;
