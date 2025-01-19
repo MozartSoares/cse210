@@ -56,9 +56,6 @@ class Program
                     library.DisplayAllScriptures();
                 break;
                 case 4:
-                    // Journal.ManageFile(FileAction.Load);
-                break;
-                case 5:
                     Console.WriteLine("Thanks for using the program, goodbye!");
                 break;
                 default:
