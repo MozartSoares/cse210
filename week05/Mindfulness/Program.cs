@@ -38,8 +38,8 @@ class Program
                 case 4:
                     Console.Clear();
                     var data = Activity.GetActivitiesData();
-                    Console.WriteLine("=== Estatísticas de Atividades ===");
-                    Console.WriteLine("Atividade\t\tVezes Jogadas");
+                    Console.WriteLine("=== Activity Stats ===");
+                    Console.WriteLine("Activity\t\tTimes Played");
                     Console.WriteLine("----------------------------------");
                     foreach (var activity in data)
                     {

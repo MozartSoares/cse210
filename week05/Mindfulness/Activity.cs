@@ -14,7 +14,7 @@ class Activity
         _description = description;
     }
 
-    public void Init()
+    protected void Init()
     {
         Console.WriteLine(GetStartingMessage());
         AskForDuration();
@@ -33,9 +33,9 @@ class Activity
     }
 
 
-  protected static void ShowSpinner(int duration, string message ="")
+  protected static void ShowSpinner(int duration, string message = "")
   {
-      char[] spinnerChars = { '|', '/', '-', '\\' };
+      char[] spinnerChars = ['|', '/', '-', '\\'];
       int spinnerPosition = message.Length + 1;  
       
       Console.Write(message + " "); 
@@ -44,13 +44,13 @@ class Activity
       {
           foreach (char c in spinnerChars)
           {
-              int left = Console.CursorLeft;
-              int top = Console.CursorTop;
-              
-              Console.SetCursorPosition(spinnerPosition, top);
-              Console.Write($"{i} {c}");
-              
-              Thread.Sleep(250);
+            int left = Console.CursorLeft;
+            int top = Console.CursorTop;
+            
+            Console.SetCursorPosition(spinnerPosition, top);
+            Console.Write($"{i} {c}");
+            
+            Thread.Sleep(250);
           }
       }
       
@@ -60,29 +60,32 @@ class Activity
 
   public void EndActivity()
   {
-      Console.WriteLine($"\nCongratulations!, you have completed the {_activityName}.");
-      SaveActivityData();
-      var data = GetActivitiesData();
-      string activityKey = GetActivityKey();
-      int timesPlayed = data[activityKey].times_played;
-      Console.WriteLine($"You have completed this activity {timesPlayed} times.");
-      Console.WriteLine("You can press any key to go back to the menu.");
-      Console.ReadLine();
-      Console.Clear();
+    Console.WriteLine($"\nCongratulations!, you have completed the {_activityName}.");
+    SaveActivityData();
+    var data = GetActivitiesData();
+    string activityKey = GetActivityKey();
+    int timesPlayed = data[activityKey].times_played;
+    Console.WriteLine($"You have completed this activity {timesPlayed} times.");
+    Console.WriteLine("You can press any key to go back to the menu.");
+    Console.ReadLine();
+    Console.Clear();
   }
     private void SaveActivityData()
     {
-        const string filePath = "user_data.json";
-        Dictionary<string, ActivityData> activitiesData;
+      const string filePath = "user_data.json";
+      Dictionary<string, ActivityData> activitiesData;
+      string json = File.ReadAllText(filePath);
 
-        string json = File.ReadAllText(filePath);
-        activitiesData = JsonSerializer.Deserialize<Dictionary<string, ActivityData>>(json);
-        string activityKey = GetActivityKey();
-        activitiesData[activityKey].times_played++;
+      // activitiesData = Breathing_Activity: {
+      //    "times_played": 0 
+      //}
 
-        var options = new JsonSerializerOptions { WriteIndented = true };
-        var updatedJson = JsonSerializer.Serialize(activitiesData, options);
-        File.WriteAllText(filePath, updatedJson);
+      activitiesData = JsonSerializer.Deserialize<Dictionary<string, ActivityData>>(json);
+      string activityKey = GetActivityKey();
+      activitiesData[activityKey].times_played++;
+      var options = new JsonSerializerOptions { WriteIndented = true };
+      var updatedJson = JsonSerializer.Serialize(activitiesData, options);
+      File.WriteAllText(filePath, updatedJson);
     }
 
     public static Dictionary<string, ActivityData> GetActivitiesData()
@@ -93,6 +96,7 @@ class Activity
         {
             return new Dictionary<string, ActivityData>();
         }
+
         try
         {
             var json = File.ReadAllText(filePath);
@@ -100,7 +104,7 @@ class Activity
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Erro ao ler arquivo: {ex.Message}");
+            Console.WriteLine($"Error reading file: {ex.Message}");
             return new Dictionary<string, ActivityData>();
         }
     }

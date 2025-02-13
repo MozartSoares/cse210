@@ -2,11 +2,17 @@
 class ListingActivity : Activity
 {
     List<String> _userPrompts = [
-      "Who are people that you appreciate?",
+    "Who are people that you appreciate?",
     "What are personal strengths of yours?",
     "Who are people that you have helped this week?",
     "When have you felt the Holy Ghost this month?",
     "Who are some of your personal heroes?",
+    "What are you grateful for today?",
+    "What are some of your favorite memories?",
+    "What are some goals you have achieved recently?",
+    "Who are people that inspire you?",
+    "What are some challenges you have overcome?",
+    "What are some things you enjoy doing in your free time?"
   ];
 
     public ListingActivity() : base("Listing Activity", "This activity will help you reflect on the good things in your life by having you list as many things as you can in a certain area.")
@@ -16,7 +22,7 @@ class ListingActivity : Activity
     public void StartActivity() 
     {
       Init();
-      ShowSpinner(3,"Get ready:");
+        ShowSpinner(3,"Get ready:");
       Console.Clear();
       Random random = new();
       var randomPrompt = _userPrompts[random.Next(_userPrompts.Count)];

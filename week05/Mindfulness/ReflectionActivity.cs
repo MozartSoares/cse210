@@ -16,7 +16,17 @@ class ReflectionActivity : Activity
     "Think of a time when you worked as part of a team.",
     "Think of a time when you resolved a conflict.",
     "Think of a time when you showed compassion to someone.",
-    "Think of a time when you made a difficult decision."
+    "Think of a time when you made a difficult decision.",
+    "Think of a time when you received unexpected kindness.",
+    "Think of a time when you discovered a new passion.",
+    "Think of a time when you forgave someone.",
+    "Think of a time when you made a significant sacrifice.",
+    "Think of a time when you stood up for yourself.",
+    "Think of a time when you experienced a moment of pure joy.",
+    "Think of a time when you helped someone achieve their goal.",
+    "Think of a time when you faced a major challenge and succeeded.",
+    "Think of a time when you learned from a failure.",
+    "Think of a time when you made a meaningful connection with someone."
   ];
     List<string> _questions = [
     "Why was this experience meaningful to you?",
@@ -43,8 +53,8 @@ class ReflectionActivity : Activity
     {
       Init();
       Console.Clear();
-      
-      ShowSpinner(3,"Get ready:");
+
+        ShowSpinner(3,"Get ready:");
 
       Console.Clear();
       Random random = new();
