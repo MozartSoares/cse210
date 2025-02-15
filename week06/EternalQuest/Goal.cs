@@ -1,13 +1,25 @@
 using System.Diagnostics.Contracts;
+using System.Security.Cryptography;
+using Newtonsoft.Json.Linq;
 
-class Goal 
+abstract class Goal 
 {
   protected string  _name;
-  protected bool _isComplete;
+  protected string  _description;
+  protected DifficultyLevels _difficultyLevel; 
+  protected GoalTypes _goalType;
+  protected bool _isComplete = false;
 
-  public char Marked() {
-    return _isComplete ? 'X' : ' ';
-  }
+  public abstract void ListSelf(int index); 
+  
+  public abstract int RecordEvent();
+  public abstract Goal CreateSelf();
+
+  public abstract object ToJson();
+
+  public abstract char GetMarker();
+
+  public abstract void LoadGoal(JObject json);
 
   public bool IsCompleted()
   {
@@ -19,4 +31,14 @@ class Goal
     return _name;
   }
 
+  public string GetDescription()
+  {
+    return _description;
+  }
+
+  public int GetPoints() {
+    return (int)_difficultyLevel;
+  }
+
 }
+
