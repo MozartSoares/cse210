@@ -32,7 +32,7 @@ class EternalGoal : Goal
 
   public override void ListSelf(int index) 
   {
-    Console.WriteLine($"{index}. Eternal: completed -> [{_timesCompleted} times ]. {GetName()}");
+    Console.WriteLine($"{index}. Eternal: completed -> [ {_timesCompleted} times ]. {GetName()}");
   }
 
   public override char GetMarker()

@@ -6,7 +6,6 @@ class ChecklistGoal : Goal
   private int _timesRequiredForBonus;
   private BonusOptions _bonus;
   private int _checks = 0;
-  private int _timesCompleted = 0;
 
   public ChecklistGoal()
   {
@@ -30,12 +29,12 @@ class ChecklistGoal : Goal
 
   public override void ListSelf(int index)
   {
-    Console.WriteLine($"{index}. Checklist: completed: -> [ {GetMarker()} bonus ]. {GetName()} ({GetDescription()}) -- Next bonus: {_checks}/{_timesRequiredForBonus} times");
+    Console.WriteLine($"{index}. Checklist: [ {GetMarker()} ]. {GetName()} ({GetDescription()}) -- Next bonus: {_checks}/{_timesRequiredForBonus} times");
   }
 
   public override char GetMarker()
   {
-    return _timesCompleted.ToString()[0];
+    return _isComplete ? 'X' : ' ';
   }
 
   private int GetBonus()
@@ -51,7 +50,7 @@ class ChecklistGoal : Goal
     {
       Console.WriteLine($"Congratulations! You've accomplished the goal '{GetName()}' {_timesRequiredForBonus} times and earned the bonus: {_bonus}");
       _checks = 0;
-      _timesCompleted++;
+      _isComplete = true;
     }
     points += GetBonus();
     return points;
@@ -69,7 +68,6 @@ class ChecklistGoal : Goal
       checks = _checks,
       timesRequiredForBonus = _timesRequiredForBonus,
       bonus = _bonus,
-      timesCompleted = _timesCompleted
     };
   }
 
@@ -79,7 +77,6 @@ class ChecklistGoal : Goal
     _description = json["description"].ToString();
     _difficultyLevel = Enum.Parse<DifficultyLevels>(json["difficultyLevel"].ToString());
     _isComplete = bool.Parse(json["isComplete"].ToString());
-    _timesCompleted = int.Parse(json["timesCompleted"].ToString());
     _checks = int.Parse(json["checks"].ToString());
     _timesRequiredForBonus = int.Parse(json["timesRequiredForBonus"].ToString());
     _bonus = Enum.Parse<BonusOptions>(json["bonus"].ToString());
