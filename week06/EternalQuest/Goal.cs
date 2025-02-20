@@ -1,7 +1,3 @@
-using System.Diagnostics.Contracts;
-using System.Security.Cryptography;
-using Newtonsoft.Json.Linq;
-
 abstract class Goal 
 {
   protected string  _name;
@@ -15,11 +11,11 @@ abstract class Goal
   public abstract int RecordEvent();
   public abstract Goal CreateSelf();
 
-  public abstract object ToJson();
+  public abstract string ToStringRepresentation();
 
   public abstract char GetMarker();
 
-  public abstract void LoadGoal(JObject json);
+  public abstract void LoadGoal(string[] data);
 
   public bool IsCompleted()
   {

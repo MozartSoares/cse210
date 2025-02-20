@@ -1,10 +1,3 @@
-
-using System;
-using System.Reflection.Metadata.Ecma335;
-using System.Runtime.InteropServices;
-using System.Text.Json.Nodes;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 class GoalManager 
 {
   private string _filePath;
@@ -69,103 +62,160 @@ class GoalManager
     return true;
   }
 
-  public void SaveFile(string filename = " ")
-  {
-    if (string.IsNullOrWhiteSpace(filename))
+  // public void SaveFile(string filename = " ")
+  // {
+  //   if (string.IsNullOrWhiteSpace(filename))
+  //   {
+  //       filename = _filePath;
+  //   }
+  //   var jsonData = new
+  //   {
+  //       User = _user.ToJson(),
+  //       Goals = _goals.Select(goal => goal.ToJson()).ToList()
+  //   };
+
+  //   string json = JsonConvert.SerializeObject(jsonData, Formatting.Indented);
+  //   _filePath = filename.Contains(".json") ? filename : filename + ".json";
+  //   File.WriteAllText(_filePath, json);
+  //   Console.WriteLine($"User and goals saved successfully to {_filePath}.");
+  // }
+
+  public void SaveFile(string filename = "")
     {
-        filename = _filePath;
+        _filePath = string.IsNullOrEmpty(filename) ? _filePath : filename;
+        _filePath = Path.ChangeExtension(_filePath, ".txt");
+        
+        using (StreamWriter writer = new StreamWriter(_filePath))
+        {
+            writer.WriteLine($"User|{_user.Name}|{_user.Level}|{_user.CurrentXp}");
+            
+            foreach (var goal in _goals)
+            {
+                writer.WriteLine(goal.ToStringRepresentation());
+            }
+        }
+        Console.WriteLine($"User and goals to {_filePath}");
     }
-    var jsonData = new
-    {
-        User = _user.ToJson(),
-        Goals = _goals.Select(goal => goal.ToJson()).ToList()
-    };
 
-    string json = JsonConvert.SerializeObject(jsonData, Formatting.Indented);
-    _filePath = filename.Contains(".json") ? filename : filename + ".json";
-    File.WriteAllText(_filePath, json);
-    Console.WriteLine($"User and goals saved successfully to {_filePath}.");
-  }
-
-  public void LoadFile(string filename)
-  {
-      _filePath = filename.Contains(".json") ? filename : filename + ".json";
-      if (!File.Exists(_filePath))
-      {
-          Console.WriteLine($"File '{_filePath}' not found. Creating a new one...");
-          CreateNewUser();
-          SaveFile(_filePath);
-          return;
-      }
-      if (!ValidateFile()) return;
+  // public void LoadFile(string filename)
+  // {
+  //     _filePath = filename.Contains(".json") ? filename : filename + ".json";
+  //     if (!File.Exists(_filePath))
+  //     {
+  //         Console.WriteLine($"File '{_filePath}' not found. Creating a new one...");
+  //         CreateNewUser();
+  //         SaveFile(_filePath);
+  //         return;
+  //     }
+  //     if (!ValidateFile()) return;
       
-      string json = File.ReadAllText(_filePath);
-      var jsonData = JsonConvert.DeserializeObject(json);
+  //     string json = File.ReadAllText(_filePath);
+  //     var jsonData = JsonConvert.DeserializeObject(json);
 
-      if (jsonData == null)
-      {
-          Console.WriteLine("Invalid JSON file.");
-          return;
-      }
-      LoadUser(jsonData);
-      LoadGoals(jsonData);
-      ListGoals();
-  }
-
-  private void LoadGoals(dynamic jsonData)
-  {
-    _goals.Clear();
-    if (jsonData.Goals == null)
+  //     if (jsonData == null)
+  //     {
+  //         Console.WriteLine("Invalid JSON file.");
+  //         return;
+  //     }
+  //     LoadUser(jsonData);
+  //     LoadGoals(jsonData);
+  //     ListGoals();
+  // }
+  public void LoadFile(string filename)
     {
-      Console.WriteLine("No goals found.");
-      return;
-    }
-    foreach (var goal in jsonData.Goals)
-    { 
-      string goalTypeString = goal.type.ToString();
-      if (!int.TryParse(goalTypeString, out int goalTypesInt))
-      {
-          Console.WriteLine($"Invalid goal type: {goalTypeString}");
-          continue;
-      }
-      JObject goalJObject = goal.ToObject<JObject>();
-      switch (goalTypesInt)
-      {
-        case (int)GoalTypes.SimpleGoal:
-          var simpleGoal = new SimpleGoal();
-          simpleGoal.LoadGoal(goalJObject);
-          _goals.Add(simpleGoal);
-          break;
-        case (int)GoalTypes.EternalGoal:
-          var eternalGoal = new EternalGoal();
-          eternalGoal.LoadGoal(goalJObject);
-          _goals.Add(eternalGoal);
-          break;
-        case (int)GoalTypes.ChecklistGoal:
-          var checklistGoal = new ChecklistGoal();
-          checklistGoal.LoadGoal(goalJObject);
-          _goals.Add(checklistGoal);
-          break;
-        default:
-          Console.WriteLine($"Unknown goal type: {goalTypeString}");
-          continue;
-      }
-    }
-    Console.WriteLine($"Goals loaded successfully from {_filePath}.");
-  }
+        _filePath = Path.ChangeExtension(filename, ".txt");
+        
+        if (!File.Exists(_filePath))
+        {
+            CreateNewUser();
+            SaveFile(_filePath);
+            return;
+        }
 
-  private void LoadUser(dynamic jsonData) {
-    if (jsonData.User == null)
-      {
-        CreateNewUser();
-      } else {
-        string name = jsonData.User.name;
-        int level = jsonData.User.level;
-        int currentXp = jsonData.User.currentXp;
-        _user = new User(name, level, currentXp);
-        Console.WriteLine($"Welcome back !, {_user.Name}. Level: {_user.Level}, XP: {_user.CurrentXp}");
-      }
-  } 
+        var lines = File.ReadAllLines(_filePath);
+        foreach (var line in lines)
+        {
+            var parts = line.Split('|');
+            switch (parts[0])
+            {
+                case "User":
+                    _user = new User(parts[1], int.Parse(parts[2]), int.Parse(parts[3]));
+                    break;
+                case "SimpleGoal":
+                    var simpleGoal = new SimpleGoal();
+                    simpleGoal.LoadGoal(parts);
+                    _goals.Add(simpleGoal);
+                    break;
+                case "EternalGoal":
+                    var eternalGoal = new EternalGoal();
+                    eternalGoal.LoadGoal(parts);
+                    _goals.Add(eternalGoal);
+                    break;
+                case "ChecklistGoal":
+                    var checklistGoal = new ChecklistGoal();
+                    checklistGoal.LoadGoal(parts);
+                    _goals.Add(checklistGoal);
+                    break;
+            }
+        }
+        Console.WriteLine($"Data loaded from {_filePath}");
+    }
+
+
+  // private void LoadGoals(dynamic jsonData)
+  // {
+  //   _goals.Clear();
+  //   if (jsonData.Goals == null)
+  //   {
+  //     Console.WriteLine("No goals found.");
+  //     return;
+  //   }
+  //   foreach (var goal in jsonData.Goals)
+  //   { 
+  //     string goalTypeString = goal.type.ToString();
+  //     if (!int.TryParse(goalTypeString, out int goalTypesInt))
+  //     {
+  //         Console.WriteLine($"Invalid goal type: {goalTypeString}");
+  //         continue;
+  //     }
+  //     JObject goalJObject = goal.ToObject<JObject>();
+  //     switch (goalTypesInt)
+  //     {
+  //       case (int)GoalTypes.SimpleGoal:
+  //         var simpleGoal = new SimpleGoal();
+  //         simpleGoal.LoadGoal(goalJObject);
+  //         _goals.Add(simpleGoal);
+  //         break;
+  //       case (int)GoalTypes.EternalGoal:
+  //         var eternalGoal = new EternalGoal();
+  //         eternalGoal.LoadGoal(goalJObject);
+  //         _goals.Add(eternalGoal);
+  //         break;
+  //       case (int)GoalTypes.ChecklistGoal:
+  //         var checklistGoal = new ChecklistGoal();
+  //         checklistGoal.LoadGoal(goalJObject);
+  //         _goals.Add(checklistGoal);
+  //         break;
+  //       default:
+  //         Console.WriteLine($"Unknown goal type: {goalTypeString}");
+  //         continue;
+  //     }
+  //   }
+  //   Console.WriteLine($"Goals loaded successfully from {_filePath}.");
+  // }
+
+  // private void LoadUser(dynamic jsonData) {
+  //   if (jsonData.User == null)
+  //     {
+  //       CreateNewUser();
+  //     } else {
+  //       string name = jsonData.User.name;
+  //       int level = jsonData.User.level;
+  //       int currentXp = jsonData.User.currentXp;
+  //       _user = new User(name, level, currentXp);
+  //       Console.WriteLine($"Welcome back !, {_user.Name}. Level: {_user.Level}, XP: {_user.CurrentXp}");
+  //     }
+  // } 
 
   private void CreateNewUser() {
     Console.Write("Looks like you're new here !, please enter your username: ");

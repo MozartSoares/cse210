@@ -1,5 +1,3 @@
-using System.Text.Json.Nodes;
-using Newtonsoft.Json.Linq;
 class SimpleGoal: Goal
 {
     
@@ -35,21 +33,16 @@ class SimpleGoal: Goal
     return points;
   }
 
-  public override object ToJson()
-  {
-    return new {
-      type = _goalType,
-      name = _name,
-      description = _description,
-      difficultyLevel = _difficultyLevel,
-      isComplete = _isComplete
-    };
-  }
-  public override void LoadGoal(JObject json)
-  {
-    _name = json["name"].ToString();
-    _description = json["description"].ToString();
-    _difficultyLevel = Enum.Parse<DifficultyLevels>(json["difficultyLevel"].ToString());
-    _isComplete = bool.Parse(json["isComplete"].ToString());
-  }
+      public override string ToStringRepresentation()
+    {
+        return $"SimpleGoal|{_name}|{_description}|{(int)_difficultyLevel}|{_isComplete}";
+    }
+
+    public override void LoadGoal(string[] data)
+    {
+        _name = data[1];
+        _description = data[2];
+        _difficultyLevel = (DifficultyLevels)int.Parse(data[3]);
+        _isComplete = bool.Parse(data[4]);
+    }
 }

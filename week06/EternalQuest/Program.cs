@@ -1,10 +1,9 @@
-using System;
-using Newtonsoft.Json; 
+
 // To exceed the requirements I added a user class to keep track of the user stats and added a new option to the menu to see stats 
 // I also added a leveling up system for the user
 class Program
 {
-    private static readonly string _baseFileUrl = "goals.json";
+    private static readonly string _baseFileUrl = "goals.txt";
     static void Main(string[] args)
     {
         Console.WriteLine("Welcome to Eternal Quest!");

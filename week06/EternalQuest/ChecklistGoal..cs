@@ -1,6 +1,3 @@
-using System.Reflection.Metadata.Ecma335;
-using System.Text.Json.Nodes;
-using Newtonsoft.Json.Linq;
 class ChecklistGoal : Goal
 {
   private int _timesRequiredForBonus;
@@ -56,30 +53,45 @@ class ChecklistGoal : Goal
     return points;
   }
 
-  public override object ToJson()
-  {
-    return new
-    {
-      type = _goalType,
-      name = _name,
-      description = _description,
-      difficultyLevel = _difficultyLevel,
-      isComplete = _isComplete,
-      checks = _checks,
-      timesRequiredForBonus = _timesRequiredForBonus,
-      bonus = _bonus,
-    };
-  }
+  // public override object ToJson()
+  // {
+  //   return new
+  //   {
+  //     type = _goalType,
+  //     name = _name,
+  //     description = _description,
+  //     difficultyLevel = _difficultyLevel,
+  //     isComplete = _isComplete,
+  //     checks = _checks,
+  //     timesRequiredForBonus = _timesRequiredForBonus,
+  //     bonus = _bonus,
+  //   };
+  // }
 
-  public override void LoadGoal(JObject json)
-  {
-    _name = json["name"].ToString();
-    _description = json["description"].ToString();
-    _difficultyLevel = Enum.Parse<DifficultyLevels>(json["difficultyLevel"].ToString());
-    _isComplete = bool.Parse(json["isComplete"].ToString());
-    _checks = int.Parse(json["checks"].ToString());
-    _timesRequiredForBonus = int.Parse(json["timesRequiredForBonus"].ToString());
-    _bonus = Enum.Parse<BonusOptions>(json["bonus"].ToString());
-  }
+  // public override void LoadGoal(JObject json)
+  // {
+  //   _name = json["name"].ToString();
+  //   _description = json["description"].ToString();
+  //   _difficultyLevel = Enum.Parse<DifficultyLevels>(json["difficultyLevel"].ToString());
+  //   _isComplete = bool.Parse(json["isComplete"].ToString());
+  //   _checks = int.Parse(json["checks"].ToString());
+  //   _timesRequiredForBonus = int.Parse(json["timesRequiredForBonus"].ToString());
+  //   _bonus = Enum.Parse<BonusOptions>(json["bonus"].ToString());
+  // }
+        public override string ToStringRepresentation()
+    {
+        return $"ChecklistGoal|{_name}|{_description}|{(int)_difficultyLevel}|{_isComplete}|{_timesRequiredForBonus}|{(int)_bonus}|{_checks}";
+    }
+
+    public override void LoadGoal(string[] data)
+    {
+        _name = data[1];
+        _description = data[2];
+        _difficultyLevel = (DifficultyLevels)int.Parse(data[3]);
+        _isComplete = bool.Parse(data[4]);
+        _timesRequiredForBonus = int.Parse(data[5]);
+        _bonus = (BonusOptions)int.Parse(data[6]);
+        _checks = int.Parse(data[7]);
+    }
 }
 

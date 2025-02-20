@@ -1,4 +1,3 @@
-using System.Text.Json.Serialization;
 
 class User {
   public string Name { get; private set; }
@@ -8,7 +7,6 @@ class User {
   }
     public User() { }  
 
-    [JsonConstructor]
     public User(string name, int level, int currentXp)
     {
         Initialize(name, level, currentXp);
@@ -59,12 +57,8 @@ class User {
         Console.WriteLine($"Congrats {Name}, you leveled up to level {Level}!");
     }
 
-    public object ToJson()
+    public object ToStringRepresentation()
     {
-        return new {
-            name = Name,
-            level = Level,
-            currentXp = CurrentXp
-        };
+        return $"User|{Name}|{Level}|{CurrentXp}";
     }
 }
